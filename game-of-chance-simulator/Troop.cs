@@ -12,5 +12,10 @@ namespace GameOfChanceSimulator
             MinDamage = minDamage;
             MaxDamage = maxDamage;
         }
+
+        void Attack(Troop target)
+        {
+
+        }
     }
 }

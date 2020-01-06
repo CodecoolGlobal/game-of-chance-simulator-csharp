@@ -4,10 +4,22 @@ namespace GameOfChanceSimulator
 {
     class Nation
     {
-        Troop[] Troops;
+        public Troop[] Troops;
+        public string Name { get; private set; }
         public Nation(string name)
         {
+            Name = name;
+            Init();
+        }
+
+        void Init()
+        {
             Troops = new Troop[5];
+            Troops[0] = new Archer(5);
+            Troops[1] = new Archer(5);
+            Troops[2] = new Cavalry();
+            Troops[3] = new Footman();
+            Troops[4] = new Footman();
         }
     }
 }
