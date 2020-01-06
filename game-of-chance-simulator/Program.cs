@@ -4,6 +4,7 @@ namespace GameOfChanceSimulator
     {
         static void Main()
         {
+            System.Console.WriteLine("Epic");
         }
     }
 }
