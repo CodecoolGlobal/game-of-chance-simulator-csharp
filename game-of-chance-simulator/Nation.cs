@@ -5,7 +5,7 @@ namespace GameOfChanceSimulator
     class Nation
     {
         public Troop[] Troops;
-        public string Name { get; private set; }
+        public string Name { get; set; }
         public Nation(string name)
         {
             Name = name;
