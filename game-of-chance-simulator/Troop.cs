@@ -2,7 +2,7 @@ namespace GameOfChanceSimulator
 {
     class Troop
     {
-        public int Health { get; public set; }
+        public int Health { get; private set; }
         public int MinDamage { get; private set; }
         public int MaxDamage { get; private set; }
 
@@ -13,9 +13,13 @@ namespace GameOfChanceSimulator
             MaxDamage = maxDamage;
         }
 
-        void Attack(Troop target)
+        public void Attack(Troop target)
         {
-
+            target.Health -= MinDamage;
+            if (target.Health < 0)
+            {
+                target.Health = 0;
+            }
         }
     }
 }
