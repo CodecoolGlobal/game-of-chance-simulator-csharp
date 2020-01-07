@@ -13,9 +13,13 @@ namespace GameOfChanceSimulator
             MaxDamage = maxDamage;
         }
 
-        void Attack(Troop target)
+        public void Attack(Troop target)
         {
-
+            target.Health -= MinDamage;
+            if (target.Health < 0)
+            {
+                target.Health = 0;
+            }
         }
     }
 }
