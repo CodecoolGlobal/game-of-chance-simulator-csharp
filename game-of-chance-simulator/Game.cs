@@ -139,51 +139,7 @@ namespace GameOfChanceSimulator
 
             /*if (Random.Next(0, 2) == 0)     //Determine who's first
             {
-                System.Console.WriteLine($"{n1.Name} is about to strike first!");
-                while (!GameOver)   //Game Loop
-                {
-                    turnCounter++;
-                    PrintBattleStatus(turnCounter);
-                    //BATTLE LOGIC
-                    for (int i = 0; i < n1.Troops.Length; i++)
-                    {
-                        int troopToAttack;
-                        if (n1.Troops[i].Health > 0)
-                        {
-                            do
-                            {
-                                troopToAttack = Random.Next(0, n2.Troops.Length);
-                            }
-                            while (CheckTroopAlive(n2.Troops[troopToAttack]));
-                            n1.Troops[i].Attack(n2.Troops[troopToAttack]);
-                            System.Console.WriteLine("{0}n {1} attacked {2} {3} and dealt {4} damage.", n1.Name, n1.Troops[i].GetType().Name, n2.Name, n2.Troops[troopToAttack].GetType().Name, n1.Troops[i].MinDamage);
-                        }
-                        if (CheckNationAlive(n2))
-                        {
-                            System.Console.WriteLine("{0} won! $$$$$$$", n1.Name);
-                            PrintBattleStatus(turnCounter);
-                            GameOver = true;
-                            break;
-                        }
-                        if (n2.Troops[i].Health > 0)
-                        {
-                            do
-                            {
-                                troopToAttack = Random.Next(0, n1.Troops.Length);
-                            }
-                            while (CheckTroopAlive(n1.Troops[troopToAttack]));
-                            n2.Troops[i].Attack(n1.Troops[troopToAttack]);
-                            System.Console.WriteLine("{0} {1} attacked {2}n {3} and dealt {4} damage.", n2.Troops[i].GetType().Name, n2.Name, n1.Name, n1.Troops[troopToAttack].GetType().Name, n2.Troops[i].MinDamage);
-                        }
-                        if (CheckNationAlive(n1))
-                        {
-                            System.Console.WriteLine("{0} won! $$$$$$$", n2.Name);
-                            PrintBattleStatus(turnCounter);
-                            GameOver = true;
-                            break;
-                        }
-                    }
-                }
+                N1StrikesFirst();
             }
             else
             {
