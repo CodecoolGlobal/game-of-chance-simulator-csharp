@@ -14,6 +14,8 @@ namespace GameOfChanceSimulator
             Random = new Random();
         }
 
+        public attack(Nation n)
+
         public void Start()
         {
             if (Random.Next(0, 2) == 0)
@@ -30,7 +32,7 @@ namespace GameOfChanceSimulator
             }
         }
 
-        bool CheckAlive(Nation noYou)
+        bool CheckAlive()
         {
             for (int i = 0; i < n1.Troops.Length; i++)
             {
