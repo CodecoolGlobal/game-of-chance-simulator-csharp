@@ -1,32 +1,87 @@
 using System;
+using System.IO;
 
 namespace GameOfChanceSimulator
 {
     class Program
     {
-        static void Main()
+        int rounds;
+        string path;
+        HistoricalDataSet hds;
+        ILogger cl;
+        //Game game;
+
+        static void Main(string[] args)
         {
-            Game game = new Game();
-            game.Start();
+            Program program = new Program();
+            program.Init(args);
+            //Evaluate here
         }
 
-        /* static bool ()
+        void Init(string[] args)
         {
-            Random rand = new Random();
-            for (int i = 0; i< 100; i++)   //Esetek száma
+            cl = new ConsoleLogger();
+            path = "\\history.csv";
+
+            if (args.Length != 0)
             {
-                double randNum = rand.NextDouble();
-                if (randNum <= 1 * ((double)1 / 100))   //Esély 1 a 100-hoz
+                try
                 {
-                    System.Console.WriteLine("Hit!");
-                    return true;
+                    rounds = Convert.ToInt32(args[0]);
+                    hds = GenerateHistoricalDataSet(args);
+
+                    /* foreach (var dataPoint in hds.DataPoints)
+                    {
+                        foreach (var data in dataPoint.GetType().GetProperties())
+                        {
+                            cl.Info(data.GetValue(dataPoint, null).ToString());
+                        }
+                    } */
+                    hds.AppendToFile(path);
                 }
-                else
+                catch
                 {
-                    System.Console.WriteLine("Miss.");
-                    return false;
+                    cl.Error("Invalid argument! Must be a number.");
                 }
             }
-        } */
+            //load previously generated data
+            else
+            {
+                cl.Info("Using previously generated data.");
+            }
+            LoadPreviouslyGeneratedData();
+        }
+
+        void LoadPreviouslyGeneratedData()
+        {
+            try
+            {
+                if (hds == null)
+                    hds = new HistoricalDataSet(cl);
+                hds.Load(path);
+                DataEvaluator de = new DataEvaluator(hds, cl);
+                Result result = de.Run();
+                cl.Info($"Number of simulations: {result.NumberOfSimulations} | Best choice: {result.BestChoice} | Chance of winning: {(result.BestChoiceChance * 100).ToString("#.##")}%");
+                /* foreach (var dataPoint in hds.DataPoints)
+                {
+                    foreach (var data in dataPoint.GetType().GetProperties())
+                    {
+                        cl.Info(data.GetValue(dataPoint, null).ToString());
+                    }
+                } */
+            }
+            catch
+            {
+                cl.Error($"Failed to read {Directory.GetCurrentDirectory() + path}, please generate a few rounds first.");
+            }
+        }
+
+        HistoricalDataSet GenerateHistoricalDataSet(string[] args)
+        {
+            hds = new HistoricalDataSet(cl);
+            hds.Generate(path, rounds);
+
+            return hds;
+        }
     }
 }

@@ -2,7 +2,7 @@ namespace GameOfChanceSimulator
 {
     class Cavalry : Troop
     {
-        public Cavalry() : base(100, 40, 80)
+        public Cavalry() : base(100, 40, 80, 15)
         {
 
         }
