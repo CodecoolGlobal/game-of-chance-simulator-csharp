@@ -4,31 +4,42 @@ namespace GameOfChanceSimulator
 {
     class Game
     {
-        Nation n1;
-        Nation n2;
+        Nation[] nations;
         Random Random;
         bool GameOver = false;
+        //STATS
+        string Winner;
+        int Casualties;
+        bool FlawlessVictory;
+        bool ShouldPrint;
         public Game()
         {
-            n1 = new Nation("Swadia");
-            n2 = new Nation("Rhodok");
+            Init();
+        }
+
+        void Init()
+        {
+            nations = new Nation[2];
+            nations[0] = new Nation("Swadia");
+            nations[1] = new Nation("Rhodok");
+            Winner = "TBA";
+            Casualties = 0;
+            FlawlessVictory = false;
             Random = new Random();
         }
 
-        public void Start()
+        public string Start()
         {
-            if (Random.Next(0, 2) == 0)     //Determine who's first
+            int firstToStrike = Random.Next(0, 2);
+            if (firstToStrike == 0)     //Determine who's first
             {
-                N1StrikesFirst();
+                MakeBattle(nations[0], nations[1]);
             }
             else
             {
-                System.Console.WriteLine($"{n2.Name} is about to strike first!");
-                for (int i = 0; i < 2; i++)
-                {
-
-                }
+                MakeBattle(nations[1], nations[0]);
             }
+            return Winner;
         }
 
         bool CheckTroopAlive(Troop troop)
@@ -48,7 +59,7 @@ namespace GameOfChanceSimulator
             int deadCount = 0;
             foreach (Troop troop in nation.Troops)
             {
-                if (troop.Health == 0)
+                if (troop.IsDead())
                 {
                     deadCount++;
                 }
@@ -65,75 +76,107 @@ namespace GameOfChanceSimulator
 
         void PrintVictory(Nation nation)
         {
-            System.Console.WriteLine("{0} won! $$$$$$$", nation.Name);
+            Winner = nation.Name;
+            foreach (Troop troop in nation.Troops)
+            {
+                if (troop.IsDead())
+                {
+                    Casualties++;
+                }
+            }
+
+            if (Casualties == 0)
+            {
+                FlawlessVictory = true;
+            }
+            if (FlawlessVictory)
+            {
+                //System.Console.WriteLine("------------------------------------{0} won the battle without casualties!------------------------------------", nation.Name);
+            }
+            {
+                //System.Console.WriteLine("------------------------------------{0} won the battle!------------------------------------", nation.Name);
+            }
+            //System.Console.WriteLine("{0}'s casualties: {1}", nation.Name, Casualties);
         }
 
         void PrintBattleStatus(int turnCounter)
         {
             //BATTLE STATUS
-            System.Console.WriteLine("------------------------------------");
-            System.Console.WriteLine("[{0}. Turn] Battle status: {1} vs {2}", turnCounter, n1.Name, n2.Name);
-            System.Console.WriteLine("------------------------------------");
+            /* System.Console.WriteLine("------------------------------------");
+            System.Console.WriteLine("[{0}. Turn] Battle status: {1} vs {2}", turnCounter, nations[0].Name, nations[1].Name);
+            System.Console.WriteLine("------------------------------------"); */
 
-            System.Console.WriteLine("{0} troops:", n1.Name);
-            foreach (Troop troop in n1.Troops)
+            foreach (var nation in nations)
             {
-                System.Console.WriteLine("\t{0}:", troop.GetType().Name, n1.Name);
-                System.Console.WriteLine("\t\t- HP: {0}", troop.Health);
-            }
-
-            System.Console.WriteLine("\n{0} troops:", n2.Name);
-            foreach (Troop troop in n2.Troops)
-            {
-                System.Console.WriteLine("\t{0}:", troop.GetType().Name, n2.Name);
-                System.Console.WriteLine("\t\t- HP: {0}", troop.Health);
+                //System.Console.WriteLine("{0}'s troops:", nation.Name);
+                foreach (Troop troop in nation.Troops)
+                {
+                    /* System.Console.WriteLine("\t{0}:", troop.GetType().Name, nation.Name);
+                    System.Console.WriteLine("\t\t- HP: {0}", troop.Health); */
+                }
             }
             //BATTLE STATUS
         }
 
-        void N1StrikesFirst()
+        void MakeBattle(Nation attackingNation, Nation defendingNation)
         {
             int turnCounter = 0;
 
-            System.Console.WriteLine($"{n1.Name} is about to strike first!");
+            //System.Console.WriteLine($"{attackingNation.Name} is about to strike first!");
+
             while (!GameOver)   //Game Loop
             {
                 turnCounter++;
-                PrintBattleStatus(turnCounter);
+                if (ShouldPrint)
+                    PrintBattleStatus(turnCounter);
                 //BATTLE LOGIC
-                for (int i = 0; i < n1.Troops.Length; i++)
+                for (int i = 0; i < attackingNation.Troops.Length; i++)
                 {
                     int troopToAttack;
-                    if (n1.Troops[i].Health > 0)
+                    if (!attackingNation.Troops[i].IsDead())
                     {
                         do
                         {
-                            troopToAttack = Random.Next(0, n2.Troops.Length);
+                            troopToAttack = Random.Next(0, defendingNation.Troops.Length);
                         }
-                        while (CheckTroopAlive(n2.Troops[troopToAttack]));
-                        n1.Troops[i].Attack(n2.Troops[troopToAttack]);
-                        System.Console.WriteLine("{0}n {1} attacked {2} {3} and dealt {4} damage.", n1.Name, n1.Troops[i].GetType().Name, n2.Name, n2.Troops[troopToAttack].GetType().Name, n1.Troops[i].MinDamage);
+                        while (defendingNation.Troops[troopToAttack].IsDead());
+                        int damage = attackingNation.Troops[i].Attack(defendingNation.Troops[troopToAttack]);
+                        if (attackingNation.Name == "Swadia")
+                        {
+                            //System.Console.WriteLine("{0}n {1} attacked {2} {3} and dealt {4} damage.", attackingNation.Name, attackingNation.Troops[i].GetType().Name, defendingNation.Name, defendingNation.Troops[troopToAttack].GetType().Name, damage);
+                        }
+                        else
+                        {
+                            //System.Console.WriteLine("{0} {1} attacked {2}n {3} and dealt {4} damage.", attackingNation.Name, attackingNation.Troops[i].GetType().Name, defendingNation.Name, defendingNation.Troops[troopToAttack].GetType().Name, damage);
+                        }
                     }
-                    if (CheckNationAlive(n2))
+                    if (CheckNationAlive(defendingNation))
                     {
-                        PrintVictory(n1);
+                        PrintVictory(attackingNation);
                         PrintBattleStatus(turnCounter);
                         GameOver = true;
                         break;
                     }
-                    if (n2.Troops[i].Health > 0)
+                    if (!defendingNation.Troops[i].IsDead())
                     {
                         do
                         {
-                            troopToAttack = Random.Next(0, n1.Troops.Length);
+                            troopToAttack = Random.Next(0, attackingNation.Troops.Length);
                         }
-                        while (CheckTroopAlive(n1.Troops[troopToAttack]));
-                        n2.Troops[i].Attack(n1.Troops[troopToAttack]);
-                        System.Console.WriteLine("{0} {1} attacked {2}n {3} and dealt {4} damage.", n2.Troops[i].GetType().Name, n2.Name, n1.Name, n1.Troops[troopToAttack].GetType().Name, n2.Troops[i].MinDamage);
+                        while (attackingNation.Troops[troopToAttack].IsDead());
+                        int damage = defendingNation.Troops[i].Attack(attackingNation.Troops[troopToAttack]);
+                        if (defendingNation.Name == "Rhodok")
+                        {
+                            //System.Console.WriteLine("{0} {1} attacked {2}n {3} and dealt {4} damage.", defendingNation.Name, defendingNation.Troops[i].GetType().Name, attackingNation.Name, attackingNation.Troops[troopToAttack].GetType().Name, damage);
+                        }
+                        else
+                        {
+                            //System.Console.WriteLine("{0}n {1} attacked {2} {3} and dealt {4} damage.", defendingNation.Name, defendingNation.Troops[i].GetType().Name, attackingNation.Name, attackingNation.Troops[troopToAttack].GetType().Name, damage);
+                        }
                     }
-                    if (CheckNationAlive(n1))
+                    if (CheckNationAlive(attackingNation))
                     {
-                        PrintVictory(n2);
+                        PrintVictory(defendingNation);
                         PrintBattleStatus(turnCounter);
                         GameOver = true;
                         break;

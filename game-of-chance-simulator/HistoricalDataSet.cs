@@ -11,6 +11,7 @@ namespace GameOfChanceSimulator
         List<HistoricalDataPoint> _DataPoints;
         public IReadOnlyList<HistoricalDataPoint> DataPoints { get { return _DataPoints.AsReadOnly(); } }
         ILogger Logger;
+        bool Tie = true;
         public HistoricalDataSet(ILogger logger)
         {
             Logger = logger;
@@ -43,6 +44,20 @@ namespace GameOfChanceSimulator
                 }
 
                 timesWon = nations.Aggregate((l, r) => l.Value > r.Value ? l : r).Value;
+            }
+
+            foreach (var nation in nations)
+            {
+                if (nation.Value != timesWon)
+                {
+                    Tie = false;
+                    break;
+                }
+            }
+            if (Tie)
+            {
+                System.Console.WriteLine("TIE GAME");
+
             }
             _DataPoints.Add(new HistoricalDataPoint(timesWon, rounds, winner));
         }

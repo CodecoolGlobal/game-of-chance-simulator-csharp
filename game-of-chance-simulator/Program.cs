@@ -56,8 +56,8 @@ namespace GameOfChanceSimulator
         {
             try
             {
-                if (hds == null)
-                    hds = new HistoricalDataSet(cl);
+                //if (hds == null)
+                hds = new HistoricalDataSet(cl);
                 hds.Load(path);
                 DataEvaluator de = new DataEvaluator(hds, cl);
                 Result result = de.Run();
