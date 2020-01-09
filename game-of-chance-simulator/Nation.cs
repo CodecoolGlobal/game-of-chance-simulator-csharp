@@ -6,9 +6,11 @@ namespace GameOfChanceSimulator
     {
         public Troop[] Troops;
         public string Name { get; set; }
-        public Nation(string name)
+        public string Bonus { get; set; }
+        public Nation(string name,string bonus)
         {
             Name = name;
+            Bonus = bonus;
             Init();
         }
 
@@ -20,6 +22,16 @@ namespace GameOfChanceSimulator
             Troops[2] = new Cavalry();
             Troops[3] = new Footman();
             Troops[4] = new Footman();
+            FratctionBonus(Troops);
         }
+
+        void FratctionBonus(Troop[] troopList)
+        {
+            for(int count=0;count<troopList.Length;count++)
+            {
+                troopList[count].AddBonus(troopList[count], Bonus);
+            }
+        }
+
     }
 }
