@@ -25,11 +25,10 @@ namespace GameOfChanceSimulator
             
             if (args.Length != 0)
             {
-                try
-                {
+               try
+               {
                     rounds = Convert.ToInt32(args[0]);
                     hds = GenerateHistoricalDataSet();
-
                     /* foreach (var dataPoint in hds.DataPoints)
                     {
                         foreach (var data in dataPoint.GetType().GetProperties())
@@ -37,12 +36,13 @@ namespace GameOfChanceSimulator
                             cl.Info(data.GetValue(dataPoint, null).ToString());
                         }
                     } */
+
                     hds.AppendToFile(path);
-                }
-                catch
-                {
-                    cl.Error("Invalid argument! Must be a number.");
-                }
+               }
+               catch
+               {
+                   cl.Error("Invalid argument! Must be a number.");
+               }
             }
             //load previously generated data
             else
@@ -80,6 +80,7 @@ namespace GameOfChanceSimulator
         {
             hds = new HistoricalDataSet(cl);
             hds.Generate(path, rounds);
+            
 
             return hds;
         }

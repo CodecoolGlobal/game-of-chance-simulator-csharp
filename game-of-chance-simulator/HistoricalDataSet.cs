@@ -10,6 +10,7 @@ namespace GameOfChanceSimulator
         int Size { get; }
         List<HistoricalDataPoint> _DataPoints;
         public IReadOnlyList<HistoricalDataPoint> DataPoints { get { return _DataPoints.AsReadOnly(); } }
+
         ILogger Logger;
         bool Tie = true;
         public HistoricalDataSet(ILogger logger)
@@ -23,6 +24,7 @@ namespace GameOfChanceSimulator
             Dictionary<string, int> nations = new Dictionary<string, int>();
             int timesWon = 0;
             string winner = "";
+            
 
             Logger.Info($"Generating {rounds} rounds of data");
             for (int i = 0; i < rounds; i++)
@@ -34,7 +36,7 @@ namespace GameOfChanceSimulator
                 winner = game.Start();
                 Logger.Info($"Winner: {winner}");
 
-                if (nations.ContainsKey(game.Start()))
+                if (nations.ContainsKey(winner))
                 {
                     nations[winner] += 1;
                 }
@@ -42,7 +44,6 @@ namespace GameOfChanceSimulator
                 {
                     nations.Add(winner, 1);
                 }
-
                 timesWon = nations.Aggregate((l, r) => l.Value > r.Value ? l : r).Value;
             }
 
@@ -53,19 +54,26 @@ namespace GameOfChanceSimulator
                     Tie = false;
                     break;
                 }
+                else
+                {
+                    Console.WriteLine(nation.Key);
+                    _DataPoints.Add(new HistoricalDataPoint(timesWon, rounds, nation.Key));
+                }
             }
             if (Tie)
             {
                 System.Console.WriteLine("TIE GAME");
 
             }
-            _DataPoints.Add(new HistoricalDataPoint(timesWon, rounds, winner));
+            
         }
 
         public void AppendToFile(string path)
         {
-            //File.AppendAllText(@Directory.GetCurrentDirectory() + path, DataPoints.Last().ToString() + Environment.NewLine);
-            File.AppendAllText(path, DataPoints.Last().ToString() + Environment.NewLine);
+            for(int i=0;i<DataPoints.Count;i++)
+            {
+                File.AppendAllText(@Directory.GetCurrentDirectory() + path, DataPoints[i].ToString() + Environment.NewLine);
+            }
         }
 
         public void Load(string path)
