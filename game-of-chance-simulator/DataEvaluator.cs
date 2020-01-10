@@ -32,7 +32,9 @@ namespace GameOfChanceSimulator
                 }
             }
 
-            string bestChoice="";// = nations.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
+            numberOfSimulations /= nations.Count;
+
+            string bestChoice = "";// = nations.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
 
             int best = nations.Aggregate((l, r) => l.Value > r.Value ? l : r).Value;
 
@@ -40,9 +42,9 @@ namespace GameOfChanceSimulator
 
             foreach (var nation in nations)
             {
-                if (nation.Value==best)
+                if (nation.Value == best)
                 {
-                    bestChoice +=nation.Key+", ";
+                    bestChoice += nation.Key + ", ";
                 }
             }
 

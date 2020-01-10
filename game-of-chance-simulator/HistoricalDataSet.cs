@@ -22,28 +22,31 @@ namespace GameOfChanceSimulator
         public void Generate(string path, int rounds)
         {
             Dictionary<string, int> nations = new Dictionary<string, int>();
+            Game game = new Game();
             int timesWon = 0;
             string winner = "";
 
+            foreach (var nation in game.nationsCollection)
+            {
+                nations.Add(nation.Name, 0);
+            }
 
             Logger.Info($"Generating {rounds} rounds of data");
             for (int i = 0; i < rounds; i++)
             {
-                Game game = new Game();
-
+                game = new Game();
                 Logger.Info($"Generating 1 round of data.");
                 Logger.Info("Nations: Swadia, Rhodok, Nord, Khergit, Vaegir, Sarranid");
                 winner = game.Start();
                 Logger.Info($"Winner: {winner}");
 
+
+
                 if (nations.ContainsKey(winner))
                 {
                     nations[winner] += 1;
                 }
-                else
-                {
-                    nations.Add(winner, 1);
-                }
+
                 timesWon = nations.Aggregate((l, r) => l.Value > r.Value ? l : r).Value;
             }
 
@@ -53,10 +56,8 @@ namespace GameOfChanceSimulator
             }
             if (Tie)
             {
-                System.Console.WriteLine("TIE GAME");
-
+                //System.Console.WriteLine("TIE GAME");
             }
-
         }
 
         public void AppendToFile(string path)

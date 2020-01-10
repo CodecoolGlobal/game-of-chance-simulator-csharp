@@ -5,32 +5,24 @@ namespace GameOfChanceSimulator
 {
     class Game
     {
-        Nation n1;
-        Nation n2;
-        Nation n3;
-        Nation n4;
-        Nation n5;
-        Nation n6;
+        public Nation[] nationsCollection { get; private set; }
         Random rand = new Random();
+
+        public Game()
+        {
+            nationsCollection = new Nation[6];
+
+            nationsCollection[0] = new Nation("Swadia", "Health");
+            nationsCollection[1] = new Nation("Rhodok", "");
+            nationsCollection[2] = new Nation("Nord", "Attack");
+            nationsCollection[3] = new Nation("Khergit", "Attack");
+            nationsCollection[4] = new Nation("Sarranid", "Health");
+            nationsCollection[5] = new Nation("Vaegir", "");
+        }
 
         public string Start()
         {
             int turnCounter = 0;
-
-            n1 = new Nation("Swadia", "Health");
-            n2 = new Nation("Rhodok","");
-            n3 = new Nation("Nord", "Attack");
-            n4 = new Nation("Khergit", "Attack");
-            n5 = new Nation("Sarranid", "Health");
-            n6 = new Nation("Vaegir","");
-
-            Nation[] nationsCollection = new Nation[6];
-            nationsCollection[0] = n1;
-            nationsCollection[1] = n2;
-            nationsCollection[2] = n3;
-            nationsCollection[3] = n4;
-            nationsCollection[4] = n5;
-            nationsCollection[5] = n6;
 
             int attackingNationIndex = rand.Next(0, nationsCollection.Length);      //random starting
             int defendingNationIndex = rand.Next(0, nationsCollection.Length);
@@ -43,7 +35,7 @@ namespace GameOfChanceSimulator
             //bool running = true;
             int[] aliveInNations = new int[nationsCollection.Length];
 
-            int[] defendersPreviousHealth= new int[nationsCollection[0].Troops.Length];
+            int[] defendersPreviousHealth = new int[nationsCollection[0].Troops.Length];
 
             while (true/*running*/)
             {
@@ -65,19 +57,19 @@ namespace GameOfChanceSimulator
                     }
 
                     defendersPreviousHealth[toAttackIndex] = nationsCollection[defendingNationIndex].Troops[toAttackIndex].Health;
-                    
-                    for(int i=0;i<defendersPreviousHealth.Length;i++)
+
+                    for (int i = 0; i < defendersPreviousHealth.Length; i++)
                     {
-                        if(defendersPreviousHealth[i]==0)
+                        if (defendersPreviousHealth[i] == 0)
                         {
                             defendersPreviousHealth[i] = nationsCollection[defendingNationIndex].Troops[i].Health;
                         }
                     }
 
                     nationsCollection[attackingNationIndex].Troops[count].Attack(nationsCollection[defendingNationIndex].Troops[toAttackIndex], nationsCollection[attackingNationIndex].Troops[count]);
-                    
 
-                    
+
+
 
                     /*Console.WriteLine("{0} {1} attacked {2} {3} with {4} damage.", nationsCollection[attackingNationIndex].Name,
                         nationsCollection[attackingNationIndex].Troops[count].GetType().Name, nationsCollection[defendingNationIndex].Name,
@@ -121,7 +113,7 @@ namespace GameOfChanceSimulator
                     //}
                     aliveInNations[count] = alive;
                 }
-                
+
                 alive = 0;
                 for (int count = 0; count < aliveInNations.Length; count++)
                 {
@@ -148,14 +140,14 @@ namespace GameOfChanceSimulator
                 else
                 {
                     attackingNationIndex = defendingNationIndex;
-                    while(aliveInNations[attackingNationIndex]==0)
+                    while (aliveInNations[attackingNationIndex] == 0)
                     {
                         attackingNationIndex = rand.Next(0, nationsCollection.Length);
                     }
 
                     defendingNationIndex = rand.Next(0, nationsCollection.Length);
 
-                    while (defendingNationIndex == attackingNationIndex ||aliveInNations[defendingNationIndex]==0)
+                    while (defendingNationIndex == attackingNationIndex || aliveInNations[defendingNationIndex] == 0)
                     {
                         defendingNationIndex = rand.Next(0, nationsCollection.Length);
                     }

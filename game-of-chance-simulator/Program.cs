@@ -8,7 +8,7 @@ namespace GameOfChanceSimulator
         int rounds;
         string path;
         HistoricalDataSet hds;
-        ILogger cl;
+        ILogger logger;
         //Game game;
 
         static void Main(string[] args)
@@ -20,35 +20,36 @@ namespace GameOfChanceSimulator
 
         void Init(string[] args)
         {
-            cl = new ConsoleLogger();
+            logger = new ConsoleLogger();
             path = "\\history.csv";
-            
+
             if (args.Length != 0)
             {
-               try
-               {
+                try
+                {
                     rounds = Convert.ToInt32(args[0]);
+                }
+                catch
+                {
+                    logger.Error("Invalid argument! Must be a number.");
+                }
+
+                if (args[0] != "0")
+                {
                     hds = GenerateHistoricalDataSet();
                     /* foreach (var dataPoint in hds.DataPoints)
                     {
                         foreach (var data in dataPoint.GetType().GetProperties())
                         {
-                            cl.Info(data.GetValue(dataPoint, null).ToString());
+                            logger.Info(data.GetValue(dataPoint, null).ToString());
                         }
                     } */
 
                     hds.AppendToFile(path);
-               }
-               catch
-               {
-                   cl.Error("Invalid argument! Must be a number.");
-               }
+                }
             }
             //load previously generated data
-            else
-            {
-                cl.Info("Using previously generated data.");
-            }
+            logger.Info("Using previously generated data.");
             LoadPreviouslyGeneratedData();
         }
 
@@ -57,30 +58,23 @@ namespace GameOfChanceSimulator
             try
             {
                 //if (hds == null)
-                hds = new HistoricalDataSet(cl);
+                hds = new HistoricalDataSet(logger);
                 hds.Load(path);
-                DataEvaluator de = new DataEvaluator(hds, cl);
+                DataEvaluator de = new DataEvaluator(hds, logger);
                 Result result = de.Run();
-                cl.Info($"Number of simulations: {result.NumberOfSimulations} | Best choice: {result.BestChoice} | Chance of winning: {(result.BestChoiceChance * 100).ToString("#.##")}%");
-                /* foreach (var dataPoint in hds.DataPoints)
-                {
-                    foreach (var data in dataPoint.GetType().GetProperties())
-                    {
-                        cl.Info(data.GetValue(dataPoint, null).ToString());
-                    }
-                } */
+                logger.Info($"Number of simulations: {result.NumberOfSimulations} | choice: {result.BestChoice} | Chance of winning: {(result.BestChoiceChance * 100).ToString("#.##")}%");
             }
             catch
             {
-                cl.Error($"Failed to read {Directory.GetCurrentDirectory() + path}, please generate a few rounds first.");
+                logger.Error($"Failed to read {Directory.GetCurrentDirectory() + path}, please generate a few rounds first.");
             }
         }
 
         HistoricalDataSet GenerateHistoricalDataSet()
         {
-            hds = new HistoricalDataSet(cl);
+            hds = new HistoricalDataSet(logger);
             hds.Generate(path, rounds);
-            
+
 
             return hds;
         }
