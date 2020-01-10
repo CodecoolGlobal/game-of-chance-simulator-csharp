@@ -24,7 +24,7 @@ namespace GameOfChanceSimulator
             Dictionary<string, int> nations = new Dictionary<string, int>();
             int timesWon = 0;
             string winner = "";
-            
+
 
             Logger.Info($"Generating {rounds} rounds of data");
             for (int i = 0; i < rounds; i++)
@@ -56,7 +56,6 @@ namespace GameOfChanceSimulator
                 }
                 else
                 {
-                    Console.WriteLine(nation.Key);
                     _DataPoints.Add(new HistoricalDataPoint(timesWon, rounds, nation.Key));
                 }
             }
@@ -65,12 +64,12 @@ namespace GameOfChanceSimulator
                 System.Console.WriteLine("TIE GAME");
 
             }
-            
+
         }
 
         public void AppendToFile(string path)
         {
-            for(int i=0;i<DataPoints.Count;i++)
+            for (int i = 0; i < DataPoints.Count; i++)
             {
                 File.AppendAllText(@Directory.GetCurrentDirectory() + path, DataPoints[i].ToString() + Environment.NewLine);
             }
