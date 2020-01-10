@@ -49,16 +49,7 @@ namespace GameOfChanceSimulator
 
             foreach (var nation in nations)
             {
-                if (nation.Value != timesWon)
-                {
-                    Tie = false;
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine(nation.Key);
-                    _DataPoints.Add(new HistoricalDataPoint(timesWon, rounds, nation.Key));
-                }
+                _DataPoints.Add(new HistoricalDataPoint(nation.Value, rounds, nation.Key));
             }
             if (Tie)
             {
